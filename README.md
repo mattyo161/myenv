@@ -58,6 +58,26 @@ brew trust --tap siderolabs/tap
 brew trust --tap supabase/tap
 ```
 
+## Sudoers drop-in for Homebrew casks
+
+Some casks ship as `.pkg` installers (basictex, vagrant, virtualbox) or need to create
+system directories (docker-desktop creates `/usr/local/bin`). Homebrew runs these steps by
+spawning its own `sudo` call internally — not through Ansible — and that call has no
+terminal attached, so sudo can't prompt for a password.
+
+`bootstrap.sh` creates `/etc/sudoers.d/homebrew-casks` on first run to grant three specific commands passwordless access:
+
+```
+%admin ALL=(root) SETENV: NOPASSWD: /usr/sbin/installer
+%admin ALL=(root) SETENV: NOPASSWD: /bin/mkdir
+%admin ALL=(root) SETENV: NOPASSWD: /bin/chmod
+```
+
+- **`NOPASSWD`** — skips the interactive password prompt for these commands only.
+- **`SETENV`** — allows Homebrew to pass `-E` (preserve environment) to sudo, which it uses to forward variables like `LOGNAME` and `USERNAME` into the installer context. Without `SETENV`, sudo rejects the `-E` flag with *"sorry, you are not allowed to preserve the environment"*.
+
+The rules are scoped to the three commands Homebrew actually needs — not a blanket `NOPASSWD: ALL`. `/usr/sbin/installer` runs `.pkg` installers (basictex, vagrant, virtualbox), `/bin/mkdir` creates system directories (docker-desktop needs `/usr/local/bin`), and `/bin/chmod` fixes permissions on files installed into system paths (vagrant completion scripts).
+
 ## Common commands
 
 ```bash

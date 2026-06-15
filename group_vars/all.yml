@@ -47,8 +47,6 @@ homebrew_formulae:
 # ---- Homebrew casks: common (installed for everyone) ------------------------
 # NOTE: visual-studio-code added so the `code` CLI exists for the vscode role.
 homebrew_casks_common:
-  - basictex
-  - docker-desktop
   - font-fira-code-nerd-font
   - font-meslo-lg-nerd-font
   - google-cloud-sdk    # Google Cloud SDK (`gcloud`, `gsutil`, `bq`)
@@ -56,9 +54,11 @@ homebrew_casks_common:
   - slack
   - slack-cli
   - utm
+  - visual-studio-code
+  - basictex
+  - docker-desktop
   - vagrant
   - virtualbox
-  - visual-studio-code
 
 # ---- Homebrew casks: personal (tagged 'personal'; skip with --skip-tags) ----
 homebrew_casks_personal:

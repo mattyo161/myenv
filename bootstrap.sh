@@ -51,7 +51,7 @@ ansible-galaxy collection install -r requirements.yml
 SUDOERS_FILE=/etc/sudoers.d/homebrew-casks
 if [[ ! -f "$SUDOERS_FILE" ]]; then
   log "Configuring passwordless sudo for Homebrew pkg installers (one-time)..."
-  printf '%%admin ALL=(root) NOPASSWD: /usr/sbin/installer\n%%admin ALL=(root) NOPASSWD: /bin/mkdir\n' \
+  printf '%%admin ALL=(root) SETENV: NOPASSWD: /usr/sbin/installer\n%%admin ALL=(root) SETENV: NOPASSWD: /bin/mkdir\n%%admin ALL=(root) SETENV: NOPASSWD: /bin/chmod\n' \
     | sudo tee "$SUDOERS_FILE" > /dev/null
   sudo chmod 440 "$SUDOERS_FILE"
 fi
