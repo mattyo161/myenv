@@ -1,0 +1,34 @@
+{
+    "window.commandCenter": true,
+    "files.autoSave": "afterDelay",
+    "files.associations": {
+        "*.html": "go"
+    },
+    "terraform.languageServer.tcp.port": 0,
+    "terraform.mcp.server.enable": true,
+    "terraform.codelens.referenceCount": true,
+    "gitlens.ai.model": "gitkraken",
+    "gitlens.ai.gitkraken.model": "gemini:gemini-2.5-flash",
+    "editor.tabSize": 2,
+    "workbench.tree.indent": 16,
+    "editor.experimental.preferTreeSitter.typescript": true,
+    "claudeCode.environmentVariables": [],
+    "claudeCode.preferredLocation": "sidebar",
+    "claudeCode.enableNewConversationShortcut": true,
+    "explorer.fileNesting.patterns": {
+        "*.ts": "${capture}.js",
+        "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+        "*.jsx": "${capture}.js",
+        "*.tsx": "${capture}.ts",
+        "tsconfig.json": "tsconfig.*.json",
+        "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock",
+        "*.sqlite": "${capture}.${extname}-*",
+        "*.db": "${capture}.${extname}-*",
+        "*.sqlite3": "${capture}.${extname}-*",
+        "*.db3": "${capture}.${extname}-*",
+        "*.sdb": "${capture}.${extname}-*",
+        "*.s3db": "${capture}.${extname}-*"
+    },
+    "dbcode.resultLocation": "below",
+    "window.autoDetectColorScheme": false
+}

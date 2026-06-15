@@ -1,0 +1,10 @@
+---
+# Kubernetes platform extras.
+- name: Kubernetes extras — formulae
+  community.general.homebrew:
+    name:
+      - kustomize   # template-free customization of k8s manifests
+      - kubeseal    # client for Bitnami Sealed Secrets
+      - helmfile    # declarative spec for deploying Helm releases
+      - krew        # kubectl plugin manager
+    state: present

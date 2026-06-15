@@ -1,0 +1,40 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "key": "cmd+k",
+        "command": "git.stageSelectedRanges",
+        "when": "!operationInProgress"
+    },
+    {
+        "key": "shift+enter",
+        "command": "workbench.action.terminal.sendSequence",
+        "args": {
+            "text": "\u001b\r"
+        },
+        "when": "terminalFocus"
+    },
+    {
+        "key": "cmd+shift+m",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+                "workbench.action.toggleSidebarVisibility",
+                "workbench.action.toggleAuxiliaryBar",
+                "workbench.action.toggleMaximizedPanel"
+            ]
+        },
+        "when": "terminalFocus"
+    },
+    {
+        "key": "cmd+shift+m",
+        "command": "runCommands",
+        "args": {
+            "commands": [
+                "workbench.action.toggleSidebarVisibility",
+                "workbench.action.toggleAuxiliaryBar",
+                "workbench.action.togglePanel"
+            ]
+        },
+        "when": "!terminalFocus"
+    }
+]

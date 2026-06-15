@@ -1,0 +1,25 @@
+---
+# Optional add-ons. Any *.yml file in tasks/enabled/ runs automatically.
+#
+# To TURN ON an extra: move its file from tasks/disabled/ -> tasks/enabled/
+# To TURN OFF an extra: move it back to tasks/disabled/ (or delete it).
+# Nothing in tasks/disabled/ ever runs.
+
+- name: Find enabled extras
+  ansible.builtin.find:
+    paths: "{{ role_path }}/tasks/enabled"
+    patterns: "*.yml"
+  register: extras_enabled
+
+- name: Apply enabled extras
+  ansible.builtin.include_tasks: "{{ item.path }}"
+  loop: "{{ extras_enabled.files | sort(attribute='path') }}"
+  loop_control:
+    label: "{{ item.path | basename }}"
+
+- name: Note when no extras are enabled
+  ansible.builtin.debug:
+    msg: >-
+      No extras enabled. Move files from roles/extras/tasks/disabled/ into
+      roles/extras/tasks/enabled/ to turn them on.
+  when: extras_enabled.matched == 0

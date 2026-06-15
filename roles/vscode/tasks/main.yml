@@ -1,0 +1,33 @@
+---
+# Install VS Code extensions via the `code` CLI.
+# The visual-studio-code cask (homebrew role) provides `code`.
+
+- name: Locate the code CLI
+  ansible.builtin.command:
+    cmd: which code
+  register: code_cli
+  changed_when: false
+  failed_when: false
+
+- name: Warn if code CLI is missing
+  ansible.builtin.debug:
+    msg: >-
+      `code` CLI not found — skipping extensions. Ensure visual-studio-code
+      is installed and the shell command is on PATH.
+  when: code_cli.rc != 0
+
+- name: List installed VS Code extensions
+  ansible.builtin.command:
+    cmd: code --list-extensions
+  register: installed_extensions
+  changed_when: false
+  when: code_cli.rc == 0
+
+- name: Install VS Code extensions
+  ansible.builtin.command:
+    cmd: "code --install-extension {{ item }}"
+  loop: "{{ vscode_extensions }}"
+  when:
+    - code_cli.rc == 0
+    - item not in installed_extensions.stdout_lines
+  changed_when: true

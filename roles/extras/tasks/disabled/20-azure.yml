@@ -1,0 +1,12 @@
+---
+# Azure extras — AKS authentication via Microsoft Entra ID (Azure AD).
+# Uses Microsoft's kubelogin (NOT the int128 core formula of the same name).
+- name: Azure extras — kubelogin tap
+  community.general.homebrew_tap:
+    name: Azure/kubelogin
+    state: present
+
+- name: Azure extras — kubelogin (AKS Entra ID auth for kubectl)
+  community.general.homebrew:
+    name: Azure/kubelogin/kubelogin
+    state: present

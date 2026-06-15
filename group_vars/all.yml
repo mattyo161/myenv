@@ -1,0 +1,110 @@
+---
+# =============================================================================
+# group_vars/all.yml — the ONE file each person edits before running.
+#
+# Edit the identity block for yourself. The package lists below match Matt's
+# current machine; trim or extend them as needed for your role.
+# =============================================================================
+
+# ---- Per-user identity (EDIT THESE) -----------------------------------------
+git_user_name: "Matt Ouellette"
+git_user_email: "mattyo161@gmail.com"
+github_user: "mattyo161"
+
+# ---- Homebrew taps ----------------------------------------------------------
+homebrew_taps:
+  - cloudgraphdev/tap
+  - siderolabs/tap
+  - supabase/tap
+
+# ---- Homebrew formulae (CLI tools) ------------------------------------------
+homebrew_formulae:
+  - ant
+  - autopsy
+  - azure-cli           # Azure CLI (`az`)
+  - bash-completion
+  - ddrescue
+  - etcd
+  - ffmpeg
+  - git
+  - k9s
+  - kubectx
+  - libyaml
+  - ntp
+  - pstree
+  - qemu
+  - ripgrep
+  - sevenzip
+  - starship
+  - stern
+  - telnet
+  - tmux
+  - wakeonlan
+  - watch
+  - weasyprint
+
+# ---- Homebrew casks: common (installed for everyone) ------------------------
+# NOTE: visual-studio-code added so the `code` CLI exists for the vscode role.
+homebrew_casks_common:
+  - basictex
+  - docker-desktop
+  - font-fira-code-nerd-font
+  - font-meslo-lg-nerd-font
+  - google-cloud-sdk    # Google Cloud SDK (`gcloud`, `gsutil`, `bq`)
+  - ngrok
+  - slack
+  - slack-cli
+  - utm
+  - vagrant
+  - virtualbox
+  - visual-studio-code
+
+# ---- Homebrew casks: personal (tagged 'personal'; skip with --skip-tags) ----
+homebrew_casks_personal:
+  - google-chrome
+  - logseq
+  - obsidian
+
+# ---- mise managed tools (tool -> version) -----------------------------------
+# Versions are "latest" to mirror the current machine. For stricter
+# reproducibility, pin specific versions here (e.g. node: "20.19.2").
+mise_tools:
+  ansible: latest
+  atmos: latest
+  aws: latest
+  colima: latest        # container runtime + local k8s (k3s) host
+  gh: latest
+  go: latest
+  gomplate: latest
+  helm: latest
+  java: latest
+  jc: latest
+  jq: latest
+  kubectl: latest
+  lima: latest
+  node: latest
+  pandoc: latest
+  pipx: latest
+  pnpm: latest
+  python: latest
+  ruby: latest
+  talosctl: latest
+  terraform: latest
+  uv: latest
+  yq: latest
+
+# mise tools whose idiomatic version file (e.g. .python-version) is honored.
+mise_idiomatic_version_file_enable_tools:
+  - python
+
+# ---- VS Code extensions -----------------------------------------------------
+vscode_extensions:
+  - anthropic.claude-code
+  - ms-azuretools.vscode-containers
+  - ms-azuretools.vscode-docker
+  - ms-python.debugpy
+  - ms-python.python
+  - ms-python.vscode-pylance
+  - ms-python.vscode-python-envs
+  - nguyenhoanglam.beautiful-dracula
+  - renathossain.markdown-runner

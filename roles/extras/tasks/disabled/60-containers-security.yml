@@ -1,0 +1,9 @@
+---
+# Container & image tooling / security scanning.
+- name: Container & security extras — formulae
+  community.general.homebrew:
+    name:
+      - trivy        # vulnerability & misconfig scanner (images, IaC, repos)
+      - dive         # explore and shrink docker image layers
+      - lazydocker   # terminal UI for docker and compose
+    state: present

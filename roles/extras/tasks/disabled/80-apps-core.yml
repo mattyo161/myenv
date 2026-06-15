@@ -1,0 +1,12 @@
+---
+# Core apps you already carry config for (closes the gap: iTerm2 + Zed configs
+# live in this repo / ~/.config but the apps weren't installed by the playbook).
+- name: Core apps — casks
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - iterm2          # terminal (you have ~/.config/iterm2)
+    - zed             # editor (you have ~/.config/zed/settings.json)
+    - 1password       # password manager (you have ~/.config/1Password)
+    - 1password-cli   # `op` CLI — secrets in scripts/automation

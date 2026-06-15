@@ -1,0 +1,45 @@
+---
+# Manage dotfiles with chezmoi. The chezmoi source dir is this repo's
+# dotfiles/ folder; template data (name/email) comes from group_vars/all.yml,
+# so identity has a single source of truth shared with the other roles.
+
+- name: Install chezmoi
+  community.general.homebrew:
+    name: chezmoi
+    state: present
+
+- name: Ensure chezmoi config directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/chezmoi"
+    state: directory
+    mode: "0755"
+
+- name: Write chezmoi config (source dir + template data)
+  ansible.builtin.template:
+    src: chezmoi.toml.j2
+    dest: "{{ ansible_env.HOME }}/.config/chezmoi/chezmoi.toml"
+    mode: "0644"
+
+- name: Apply dotfiles with chezmoi
+  ansible.builtin.command:
+    cmd: "{{ homebrew_prefix | default('/opt/homebrew') }}/bin/chezmoi apply"
+  register: chezmoi_apply
+  changed_when: chezmoi_apply.stdout | length > 0
+
+# iTerm2 keeps prefs in a binary plist, so instead of templating it we point
+# iTerm2 at the committed copy under files/iterm2/ and let it load from there.
+- name: iTerm2 — point at the repo's preferences folder
+  community.general.osx_defaults:
+    domain: com.googlecode.iterm2
+    key: PrefsCustomFolder
+    type: string
+    value: "{{ role_path }}/files/iterm2"
+    state: present
+
+- name: iTerm2 — load preferences from the custom folder
+  community.general.osx_defaults:
+    domain: com.googlecode.iterm2
+    key: LoadPrefsFromCustomFolder
+    type: bool
+    value: true
+    state: present

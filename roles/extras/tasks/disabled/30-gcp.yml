@@ -1,0 +1,19 @@
+---
+# GCP extras — GKE auth plugin (kubectl needs it to talk to GKE clusters).
+#
+# NOTE: gke-gcloud-auth-plugin is a gcloud *component*. Homebrew's
+# google-cloud-sdk cask normally disables the gcloud component manager. If the
+# task below reports an error, install the plugin manually after `gcloud init`:
+#     gcloud components install gke-gcloud-auth-plugin
+# or use the standalone Google-provided SDK instead of the brew cask.
+- name: GCP extras — install gke-gcloud-auth-plugin component
+  ansible.builtin.command:
+    cmd: /opt/homebrew/bin/gcloud components install gke-gcloud-auth-plugin --quiet
+  register: gke_plugin
+  changed_when: "'All components are up to date' not in gke_plugin.stdout"
+  failed_when: false
+
+- name: GCP extras — surface component-manager issues
+  ansible.builtin.debug:
+    msg: "{{ gke_plugin.stderr | default('') }}"
+  when: gke_plugin.rc | default(0) != 0

@@ -1,0 +1,13 @@
+---
+# AWS extras — EKS management, credential isolation, SSM sessions.
+- name: AWS extras — formulae
+  community.general.homebrew:
+    name:
+      - eksctl      # create and manage EKS clusters
+      - aws-vault   # store AWS credentials securely in the macOS Keychain
+    state: present
+
+- name: AWS extras — session-manager-plugin (cask)
+  community.general.homebrew_cask:
+    name: session-manager-plugin   # `aws ssm start-session` support
+    state: present

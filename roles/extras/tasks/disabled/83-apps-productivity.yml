@@ -1,0 +1,17 @@
+---
+# Productivity / communication / media apps (more personal — review per machine).
+- name: Productivity & comms apps — casks
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - firefox
+    - microsoft-teams
+    - microsoft-outlook
+    - onedrive
+    - zoom
+    - discord
+    - grammarly-desktop
+    - vlc
+    - gimp
+    - balenaetcher

@@ -1,0 +1,77 @@
+---
+# Ensure the macOS build toolchain is installed, authorized, and can compile.
+# Runs first so every later role (and the user's own builds) has a working
+# clang/git/make. Handles both Command Line Tools-only and full Xcode.app setups.
+
+# --- Command Line Tools ------------------------------------------------------
+- name: Check for the active developer directory
+  ansible.builtin.command: xcode-select -p
+  register: xcode_select_path
+  changed_when: false
+  failed_when: false
+
+- name: Trigger Command Line Tools install (opens a GUI dialog)
+  ansible.builtin.command: xcode-select --install
+  when: xcode_select_path.rc != 0
+  changed_when: true
+  failed_when: false
+
+- name: Fail clearly if Command Line Tools are not ready yet
+  ansible.builtin.fail:
+    msg: >-
+      Xcode Command Line Tools are still installing. Complete the dialog that
+      just opened, then re-run. (bootstrap.sh waits for this automatically.)
+  when: xcode_select_path.rc != 0
+
+- name: Re-read the active developer directory
+  ansible.builtin.command: xcode-select -p
+  register: xcode_dir
+  changed_when: false
+
+- name: Determine whether full Xcode.app is the active toolchain
+  ansible.builtin.set_fact:
+    xcode_full: "{{ 'Xcode.app' in xcode_dir.stdout }}"
+
+# --- Full Xcode.app only: license + first-launch components (needs sudo) ------
+# Generic builds (clang/make/git) work with CLT alone and accept their license
+# at install time. These steps cover `xcodebuild`, which refuses to run until
+# the Xcode license is accepted and first-launch components are installed.
+- name: Check Xcode first-launch / license status
+  ansible.builtin.command: xcodebuild -checkFirstLaunchStatus
+  register: xcode_first
+  changed_when: false
+  failed_when: false
+  when: xcode_full
+
+- name: Accept the Xcode license (prompts for your sudo password)
+  ansible.builtin.command: xcodebuild -license accept
+  become: true
+  when:
+    - xcode_full
+    - xcode_first.rc | default(0) != 0
+  changed_when: true
+
+- name: Run Xcode first-launch (installs required components)
+  ansible.builtin.command: xcodebuild -runFirstLaunch
+  become: true
+  when:
+    - xcode_full
+    - xcode_first.rc | default(0) != 0
+  changed_when: true
+
+# --- Prove the toolchain can actually build ----------------------------------
+- name: Verify the toolchain can compile and link
+  ansible.builtin.shell: |
+    set -euo pipefail
+    tmp="$(mktemp -d)"
+    trap 'rm -rf "$tmp"' EXIT
+    printf 'int main(void){return 0;}\n' > "$tmp/check.c"
+    xcrun clang "$tmp/check.c" -o "$tmp/check"
+    "$tmp/check"
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: Build toolchain is ready
+  ansible.builtin.debug:
+    msg: "Build toolchain OK — active developer dir: {{ xcode_dir.stdout }}"

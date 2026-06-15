@@ -1,0 +1,34 @@
+---
+# =============================================================================
+# site.yml — provision a macOS laptop to match the team baseline.
+#
+# Usage:
+#   ansible-playbook site.yml                     # everything
+#   ansible-playbook site.yml --skip-tags personal  # omit personal-only apps
+#   ansible-playbook site.yml --tags mise         # one layer only
+#   ansible-playbook site.yml --check --diff      # dry run
+# =============================================================================
+- name: Set up macOS laptop
+  hosts: local
+  gather_facts: true
+
+  pre_tasks:
+    - name: Fail early on non-macOS hosts
+      ansible.builtin.assert:
+        that: ansible_system == "Darwin"
+        fail_msg: "This playbook only supports macOS."
+      tags: always
+
+  roles:
+    - role: xcode
+      tags: xcode
+    - role: homebrew
+      tags: homebrew
+    - role: mise
+      tags: mise
+    - role: vscode
+      tags: vscode
+    - role: extras
+      tags: extras
+    - role: dotfiles
+      tags: dotfiles

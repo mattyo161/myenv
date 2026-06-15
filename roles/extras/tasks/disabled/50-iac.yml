@@ -1,0 +1,16 @@
+---
+# Infrastructure-as-Code extras (complements terraform, already in mise).
+- name: IaC extras — tflint tap
+  community.general.homebrew_tap:
+    name: terraform-linters/tap
+    state: present
+
+- name: IaC extras — formulae
+  community.general.homebrew:
+    name:
+      - terragrunt                     # DRY wrapper around Terraform
+      - terraform-docs                 # generate docs from TF modules
+      - terraform-linters/tap/tflint   # Terraform linter
+      - checkov                        # IaC static security analysis
+      - infracost                      # cloud cost estimates from Terraform
+    state: present

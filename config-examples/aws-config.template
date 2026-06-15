@@ -1,0 +1,35 @@
+# AWS config template (IAM Identity Center / SSO).
+#
+# Copy to ~/.aws/config and replace the COMPANY/account placeholders with the
+# values your new employer gives you, then run:
+#     aws sso login --sso-session COMPANY
+#
+# Add one [profile ...] block per account/role you need. `output`/`region` are
+# personal preference. This mirrors the working structure from the reference
+# machine, with personal account IDs removed.
+
+[sso-session COMPANY]
+sso_start_url = https://YOUR-COMPANY.awsapps.com/start
+sso_region = us-east-1
+sso_registration_scopes = sso:account:access
+
+[profile dev]
+sso_session = COMPANY
+sso_account_id = 000000000000
+sso_role_name = AdministratorAccess
+region = us-east-1
+output = json
+
+[profile staging]
+sso_session = COMPANY
+sso_account_id = 000000000000
+sso_role_name = AdministratorAccess
+region = us-east-1
+output = json
+
+[profile prod]
+sso_session = COMPANY
+sso_account_id = 000000000000
+sso_role_name = AdministratorAccess
+region = us-east-1
+output = json

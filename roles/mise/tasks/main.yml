@@ -1,0 +1,32 @@
+---
+# Install mise (if absent), write the global config, and install all tools.
+
+- name: Check for existing mise install
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.local/bin/mise"
+  register: mise_bin
+
+- name: Install mise via official installer
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://mise.run | sh
+    creates: "{{ ansible_env.HOME }}/.local/bin/mise"
+  when: not mise_bin.stat.exists
+
+- name: Ensure mise config directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/mise"
+    state: directory
+    mode: "0755"
+
+- name: Write global mise config
+  ansible.builtin.template:
+    src: config.toml.j2
+    dest: "{{ ansible_env.HOME }}/.config/mise/config.toml"
+    mode: "0644"
+  register: mise_config
+
+- name: Install mise tools
+  ansible.builtin.command:
+    cmd: "{{ ansible_env.HOME }}/.local/bin/mise install"
+  register: mise_install
+  changed_when: "'Installing' in mise_install.stderr or 'installing' in mise_install.stdout"

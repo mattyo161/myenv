@@ -1,0 +1,13 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Inserts a blank line between shell prompts
+add_newline = true
+
+format = '$all'
+
+
+
+[kubernetes]
+disabled = false
+format = '🐳 [$context($namespace)](cyan) '
+#detect_files = ['k8s']

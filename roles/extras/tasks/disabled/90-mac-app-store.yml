@@ -1,0 +1,51 @@
+---
+# Mac App Store apps via `mas` (https://github.com/mas-cli/mas).
+#
+# PREREQUISITES & NOTES:
+#   * Sign into the App Store *app* first — mas cannot log you in.
+#   * The IDs below are for App Store apps found in your /Applications. Verify or
+#     extend the list with:
+#         mas list            # IDs of everything already installed from the Store
+#         mas search "Name"   # look up an app's ID
+#   * mas install is idempotent (already-installed apps are skipped).
+- name: App Store — install mas
+  community.general.homebrew:
+    name: mas
+    state: present
+
+- name: App Store — check sign-in (informational)
+  ansible.builtin.command:
+    cmd: /opt/homebrew/bin/mas account
+  register: mas_account
+  changed_when: false
+  failed_when: false
+
+- name: App Store — sign-in reminder
+  ansible.builtin.debug:
+    msg: >-
+      Could not confirm an App Store sign-in. If installs below fail with
+      "Not signed in", open the App Store app, sign in, and re-run.
+  when: mas_account.rc != 0
+
+- name: App Store — install apps
+  ansible.builtin.command:
+    cmd: "/opt/homebrew/bin/mas install {{ item.id }}"
+  loop:
+    - { id: 497799835, name: "Xcode" }
+    - { id: 904280696, name: "Things 3" }
+    - { id: 441258766, name: "Magnet" }
+    - { id: 1287239339, name: "ColorSlurp" }
+    - { id: 360593530, name: "Notability" }
+    - { id: 1091189122, name: "Bear" }
+    - { id: 585829637, name: "Todoist" }
+    - { id: 524141863, name: "Jump Desktop" }
+    - { id: 409183694, name: "Keynote" }
+    - { id: 409201541, name: "Pages" }
+    - { id: 409203825, name: "Numbers" }
+    - { id: 682658836, name: "GarageBand" }
+    - { id: 408981434, name: "iMovie" }
+  loop_control:
+    label: "{{ item.name }} ({{ item.id }})"
+  register: mas_install
+  changed_when: "'Installed' in mas_install.stdout"
+  failed_when: false

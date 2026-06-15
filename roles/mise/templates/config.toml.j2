@@ -1,0 +1,8 @@
+# Managed by Ansible (roles/mise) — edit group_vars/all.yml, not this file.
+[tools]
+{% for tool, version in mise_tools.items() %}
+{{ tool }} = "{{ version }}"
+{% endfor %}
+
+[settings]
+idiomatic_version_file_enable_tools = {{ mise_idiomatic_version_file_enable_tools | to_json }}

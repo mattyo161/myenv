@@ -1,0 +1,28 @@
+---
+# Local Kubernetes via colima — runs k3s inside a lima VM.
+#
+# colima itself is installed by the mise role; this extra brings up the cluster.
+# Bringing it up pulls the k3s image and starts a VM (a few minutes the first
+# time), which is why it lives behind opt-in. Re-running is idempotent: if the
+# VM is already running it does nothing.
+#
+# When up, kubectl gets a "colima" context merged into ~/.kube/config:
+#     kubectl config use-context colima
+# Manage it directly with:  colima stop | colima delete | colima status
+#
+# Adjust the CPU/MEM/DISK below to taste.
+- name: Local k8s — check colima status
+  ansible.builtin.command:
+    cmd: "{{ ansible_env.HOME }}/.local/bin/mise exec -- colima status"
+  register: colima_status
+  changed_when: false
+  failed_when: false
+
+- name: Local k8s — start colima with k3s
+  ansible.builtin.command:
+    cmd: >-
+      {{ ansible_env.HOME }}/.local/bin/mise exec -- colima start
+      --kubernetes --cpu 4 --memory 8 --disk 60
+  when: colima_status.rc != 0
+  register: colima_start
+  changed_when: colima_start.rc == 0

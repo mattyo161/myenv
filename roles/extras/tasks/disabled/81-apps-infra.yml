@@ -1,0 +1,14 @@
+---
+# Infra / Kubernetes / debugging apps that match your stack.
+- name: Infra apps — casks
+  community.general.homebrew_cask:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - lens                 # Kubernetes IDE
+    - raspberry-pi-imager  # flash images for your rpi/k3s nodes
+    - wireshark            # packet capture / network debugging
+    - charles              # HTTP(S) proxy debugging
+    - termius              # SSH client
+    - mysqlworkbench       # MySQL GUI
+    - drawio               # architecture diagrams
