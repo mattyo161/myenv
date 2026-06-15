@@ -2,14 +2,14 @@
 # =============================================================================
 # group_vars/all.yml — the ONE file each person edits before running.
 #
-# Edit the identity block for yourself. The package lists below match Matt's
-# current machine; trim or extend them as needed for your role.
+# Edit the identity block for yourself. The package lists below are a sensible
+# baseline; trim or extend them as needed for your role.
 # =============================================================================
 
 # ---- Per-user identity (EDIT THESE) -----------------------------------------
-git_user_name: "Matt Ouellette"
-git_user_email: "mattyo161@gmail.com"
-github_user: "mattyo161"
+git_user_name: "Your Name"
+git_user_email: "you@example.com"
+github_user: "your-gh-user"
 
 # ---- Homebrew taps ----------------------------------------------------------
 homebrew_taps:

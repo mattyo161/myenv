@@ -8,13 +8,29 @@ configuration in one command. Orchestrated by **Ansible**, with:
 - **VS Code** — editor extensions
 - **chezmoi** — dotfiles, templated per user
 
+## Before you run (required first step)
+
+The repo ships with **placeholder identity values**. You must replace them with your own in
+`group_vars/all.yml` before running — the playbook **refuses to start** while the
+placeholders are still in place (a pre-flight assert aborts before anything is installed):
+
+```yaml
+# group_vars/all.yml
+git_user_name:  "Your Name"        # -> your name
+git_user_email: "you@example.com"  # -> your email
+github_user:    "your-gh-user"     # -> your GitHub username
+```
+
+Optionally review the rest of `group_vars/all.yml` (package/cask/mise lists) and trim
+anything you don't want.
+
 ## Quickstart
 
 ```bash
 git clone <this-repo-url> myenv
 cd myenv
 
-# 1. Put YOUR identity in group_vars/all.yml (name, email, github_user)
+# 1. REQUIRED: set your identity (see "Before you run" above)
 $EDITOR group_vars/all.yml
 
 # 2. Run it
@@ -22,7 +38,8 @@ $EDITOR group_vars/all.yml
 ```
 
 `bootstrap.sh` installs the Xcode Command Line Tools, Homebrew, and Ansible, then runs the
-playbook. It is **idempotent** — safe to run repeatedly.
+playbook. It is **idempotent** — safe to run repeatedly. If you forget step 1, it stops
+immediately with a message telling you to edit `group_vars/all.yml`.
 
 ## Common commands
 

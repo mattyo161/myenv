@@ -1,4 +1,4 @@
-eval "$(/Users/matt/.local/bin/mise activate zsh)"
+eval "$($HOME/.local/bin/mise activate zsh)"
 
 aws_completer="$(which aws_completer)"
 if [[ -n "${aws_completer}" ]]; then
@@ -8,7 +8,6 @@ if [[ -n "${aws_completer}" ]]; then
 fi
 
 export KUBECONFIG="$HOME/.kube/config"
-# export KUBECONFIG="$HOME/.kube/k3s-cluster.config:$HOME/.kube/talos.config:$HOME/.kube/k3s.config:$HOME/.kube/rpi.config:$HOME/.kube/config:$HOME/.kube/config"
 source <(kubectl completion zsh)
 source <(talosctl completion zsh)
 
