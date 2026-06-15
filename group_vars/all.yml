@@ -7,9 +7,10 @@
 # =============================================================================
 
 # ---- Per-user identity (EDIT THESE) -----------------------------------------
-git_user_name: "Your Name"
-git_user_email: "you@example.com"
-github_user: "your-gh-user"
+# TODO: consider moving these to group_vars/personal.yml and skipping that file by default, so the "all" vars are truly "all" and not personal.
+# git_user_name: "Your Name"
+# git_user_email: "you@example.com"
+# github_user: "your-gh-user"
 
 # ---- Homebrew taps ----------------------------------------------------------
 homebrew_taps:
@@ -19,11 +20,11 @@ homebrew_taps:
 
 # ---- Homebrew formulae (CLI tools) ------------------------------------------
 homebrew_formulae:
-  - ant
-  - autopsy
+#  - ant
+#  - autopsy
   - azure-cli           # Azure CLI (`az`)
   - bash-completion
-  - ddrescue
+#  - ddrescue
   - etcd
   - ffmpeg
   - git
@@ -34,14 +35,14 @@ homebrew_formulae:
   - pstree
   - qemu
   - ripgrep
-  - sevenzip
+#  - sevenzip
   - starship
-  - stern
-  - telnet
+#  - stern
+#  - telnet
   - tmux
-  - wakeonlan
+#  - wakeonlan
   - watch
-  - weasyprint
+#  - weasyprint
 
 # ---- Homebrew casks: common (installed for everyone) ------------------------
 # NOTE: visual-studio-code added so the `code` CLI exists for the vscode role.
