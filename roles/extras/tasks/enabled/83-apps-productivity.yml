@@ -13,6 +13,10 @@
     - onedrive
     - zoom
     - raycast # screen manager, utility, launcher, ...
+  register: cask_result
+  retries: 3
+  delay: 15
+  until: cask_result is not failed
     # - discord
     # - grammarly-desktop
     # - vlc
