@@ -18,8 +18,11 @@ log() { printf '\n\033[1;34m==>\033[0m %s\n' "$1"; }
 # 0. Prime sudo — ask for the password once upfront, then keep the timestamp
 # alive in the background so it never expires mid-run (Homebrew, Ansible become,
 # and the sudoers setup all need it at different points).
+# -n (non-interactive) in the loop avoids printing a "Password:" prompt to the
+# terminal while other programs are waiting for input.
+log "Caching sudo credentials for the duration of the bootstrap run..."
 sudo -v
-while true; do sudo -v; sleep 60; done &
+while true; do sleep 50; sudo -n -v 2>/dev/null || true; done &
 SUDO_KEEPALIVE_PID=$!
 trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null' EXIT
 
@@ -42,17 +45,26 @@ if ! command -v brew >/dev/null 2>&1; then
 fi
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# 3. Ansible (bootstrap copy; mise manages its own later) ---------------------
+# 3. mise — single-binary tool manager ----------------------------------------
+if [[ ! -x "$HOME/.local/bin/mise" ]]; then
+  log "Installing mise..."
+  curl -fsSL https://mise.run | sh
+fi
+export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+
+# 4. Ansible (via mise/pipx — avoids brew pulling in a full Python@3.14 stack) -
+# Version is read from group_vars/all.yml to stay in sync with the playbook.
+ANSIBLE_VERSION="$(awk '/^  ansible:/ {print $2}' group_vars/all.yml)"
 if ! command -v ansible-playbook >/dev/null 2>&1; then
-  log "Installing Ansible via Homebrew..."
-  NONINTERACTIVE=1 brew install ansible
+  log "Installing Ansible ${ANSIBLE_VERSION} via mise..."
+  MISE_YES=1 mise install "ansible@${ANSIBLE_VERSION}"
 fi
 
-# 4. Required Ansible collections ---------------------------------------------
+# 5. Required Ansible collections ---------------------------------------------
 log "Installing Ansible Galaxy collections..."
 ansible-galaxy collection install -r requirements.yml
 
-# 5. Run the playbook ---------------------------------------------------------
+# 6. Run the playbook ---------------------------------------------------------
 # -K (--ask-become-pass) is required for the xcode license step and for the
 # homebrew role to write /etc/sudoers.d/homebrew-casks on the first run.
 # You'll be asked for your macOS password once; just press Enter if not needed.
