@@ -44,19 +44,22 @@ curl -fsSL https://claude.ai/install.sh | bash
 
 ## Trust Homebrew taps
 
-If you want to use these tools you will need to trust the taps.
-TODO: update ansible to make these optional selections but if not installed don't try to install the services, and if service/cli is marked for install make sure to warn user that taps need to be trusted.
+Non-official taps must be trusted before Homebrew will load their formulae/casks
+when `HOMEBREW_REQUIRE_TAP_TRUST` is set. The `homebrew` role does this
+automatically: every tap listed in `homebrew_taps` is trusted via
+`brew trust --tap` right after it is added, so anything you add there is covered
+without a manual step. Trusting a tap trusts all of its formulae and casks.
+
+The taps trusted by default (from `group_vars/all.yml`):
 
 ```bash
-# CloudGraph CLI universal tool for managing Cloud accounts using GraphQL
-brew trust --tap cloudgraphdev/tap
-
-# siderolabs - is talos the kubernetes OS
-brew trust --tap siderolabs/tap
-
-# supabase - powerful cloud native/scale PostgreSQL database
-brew trust --tap supabase/tap
+brew trust --tap cloudgraphdev/tap   # CloudGraph CLI — manage cloud accounts via GraphQL
+brew trust --tap siderolabs/tap      # siderolabs — Talos, the Kubernetes OS
+brew trust --tap supabase/tap        # supabase — cloud-native/scale PostgreSQL
 ```
+
+TODO: make these optional selections — if a service/CLI isn't installed, don't try
+to install it; if it is marked for install, ensure its tap is added and trusted.
 
 ## Sudoers drop-in for Homebrew casks
 
