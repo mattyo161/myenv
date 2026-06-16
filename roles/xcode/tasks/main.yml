@@ -3,6 +3,22 @@
 # Runs first so every later role (and the user's own builds) has a working
 # clang/git/make. Handles both Command Line Tools-only and full Xcode.app setups.
 
+# --- Rosetta 2 (Apple Silicon only) ------------------------------------------
+# Rosetta lets x86_64 binaries run on ARM. Needed for Docker to pull and run
+# amd64 container images (many third-party images don't publish an arm64 variant).
+- name: Check if Rosetta is already installed
+  ansible.builtin.stat:
+    path: /Library/Apple/usr/share/rosetta/rosetta
+  register: rosetta_stat
+  when: ansible_architecture == 'arm64'
+
+- name: Install Rosetta 2
+  ansible.builtin.command: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+  when:
+    - ansible_architecture == 'arm64'
+    - not rosetta_stat.stat.exists
+  changed_when: true
+
 # --- Command Line Tools ------------------------------------------------------
 - name: Check for the active developer directory
   ansible.builtin.command: xcode-select -p

@@ -7,9 +7,10 @@
 # =============================================================================
 
 # ---- Per-user identity (EDIT THESE) -----------------------------------------
-git_user_name: "Your Name"
-git_user_email: "you@example.com"
-github_user: "your-gh-user"
+# TODO: consider moving these to group_vars/personal.yml and skipping that file by default, so the "all" vars are truly "all" and not personal.
+# git_user_name: "Your Name"
+# git_user_email: "you@example.com"
+# github_user: "your-gh-user"
 
 # ---- Homebrew taps ----------------------------------------------------------
 homebrew_taps:
@@ -19,11 +20,11 @@ homebrew_taps:
 
 # ---- Homebrew formulae (CLI tools) ------------------------------------------
 homebrew_formulae:
-  - ant
-  - autopsy
+#  - ant
+#  - autopsy
   - azure-cli           # Azure CLI (`az`)
   - bash-completion
-  - ddrescue
+#  - ddrescue
   - etcd
   - ffmpeg
   - git
@@ -34,20 +35,18 @@ homebrew_formulae:
   - pstree
   - qemu
   - ripgrep
-  - sevenzip
+#  - sevenzip
   - starship
-  - stern
-  - telnet
+#  - stern
+#  - telnet
   - tmux
-  - wakeonlan
+#  - wakeonlan
   - watch
-  - weasyprint
+#  - weasyprint
 
 # ---- Homebrew casks: common (installed for everyone) ------------------------
 # NOTE: visual-studio-code added so the `code` CLI exists for the vscode role.
 homebrew_casks_common:
-  - basictex
-  - docker-desktop
   - font-fira-code-nerd-font
   - font-meslo-lg-nerd-font
   - google-cloud-sdk    # Google Cloud SDK (`gcloud`, `gsutil`, `bq`)
@@ -55,9 +54,11 @@ homebrew_casks_common:
   - slack
   - slack-cli
   - utm
+  - visual-studio-code
+  - basictex
+  - docker-desktop
   - vagrant
   - virtualbox
-  - visual-studio-code
 
 # ---- Homebrew casks: personal (tagged 'personal'; skip with --skip-tags) ----
 homebrew_casks_personal:
@@ -69,7 +70,7 @@ homebrew_casks_personal:
 # Versions are "latest" to mirror the current machine. For stricter
 # reproducibility, pin specific versions here (e.g. node: "20.19.2").
 mise_tools:
-  ansible: latest
+  ansible: 13.7.0
   atmos: latest
   aws: latest
   colima: latest        # container runtime + local k8s (k3s) host

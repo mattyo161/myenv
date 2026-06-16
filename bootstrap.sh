@@ -44,7 +44,19 @@ fi
 log "Installing Ansible Galaxy collections..."
 ansible-galaxy collection install -r requirements.yml
 
-# 5. Run the playbook ---------------------------------------------------------
+# 5. Allow Homebrew pkg-based casks to run their installers without a TTY -----
+# Homebrew spawns its own sudo for .pkg installers (basictex, vagrant, etc.)
+# and that call has no terminal. A sudoers drop-in grants NOPASSWD for just
+# the two commands Homebrew needs so those casks install unattended.
+SUDOERS_FILE=/etc/sudoers.d/homebrew-casks
+if [[ ! -f "$SUDOERS_FILE" ]]; then
+  log "Configuring passwordless sudo for Homebrew pkg installers (one-time)..."
+  printf '%%admin ALL=(root) SETENV: NOPASSWD: /usr/sbin/installer\n%%admin ALL=(root) SETENV: NOPASSWD: /bin/mkdir\n%%admin ALL=(root) SETENV: NOPASSWD: /bin/chmod\n' \
+    | sudo tee "$SUDOERS_FILE" > /dev/null
+  sudo chmod 440 "$SUDOERS_FILE"
+fi
+
+# 6. Run the playbook ---------------------------------------------------------
 # -K (--ask-become-pass) lets the xcode role accept the Xcode license via sudo.
 # You'll be asked for your macOS password once; just press Enter if not needed.
 log "Running the playbook..."

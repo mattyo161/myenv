@@ -11,15 +11,8 @@ configuration in one command. Orchestrated by **Ansible**, with:
 ## Before you run (required first step)
 
 The repo ships with **placeholder identity values**. You must replace them with your own in
-`group_vars/all.yml` before running — the playbook **refuses to start** while the
-placeholders are still in place (a pre-flight assert aborts before anything is installed):
-
-```yaml
-# group_vars/all.yml
-git_user_name:  "Your Name"        # -> your name
-git_user_email: "you@example.com"  # -> your email
-github_user:    "your-gh-user"     # -> your GitHub username
-```
+`group_vars/personal.yml` before running — the playbook **refuses to start** while the
+placeholders are still in place (a pre-flight assert aborts before anything is installed)
 
 Optionally review the rest of `group_vars/all.yml` (package/cask/mise lists) and trim
 anything you don't want.
@@ -31,7 +24,8 @@ git clone <this-repo-url> myenv
 cd myenv
 
 # 1. REQUIRED: set your identity (see "Before you run" above)
-$EDITOR group_vars/all.yml
+cp group_vars/local.yml.example group_vars/local.yml
+$EDITOR group_vars/local.yml
 
 # 2. Run it
 ./bootstrap.sh
@@ -40,6 +34,49 @@ $EDITOR group_vars/all.yml
 `bootstrap.sh` installs the Xcode Command Line Tools, Homebrew, and Ansible, then runs the
 playbook. It is **idempotent** — safe to run repeatedly. If you forget step 1, it stops
 immediately with a message telling you to edit `group_vars/all.yml`.
+
+## Useful installs if not part of bootstrap
+
+### claude code cli
+```bash
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+## Trust Homebrew taps
+
+If you want to use these tools you will need to trust the taps.
+TODO: update ansible to make these optional selections but if not installed don't try to install the services, and if service/cli is marked for install make sure to warn user that taps need to be trusted.
+
+```bash
+# CloudGraph CLI universal tool for managing Cloud accounts using GraphQL
+brew trust --tap cloudgraphdev/tap
+
+# siderolabs - is talos the kubernetes OS
+brew trust --tap siderolabs/tap
+
+# supabase - powerful cloud native/scale PostgreSQL database
+brew trust --tap supabase/tap
+```
+
+## Sudoers drop-in for Homebrew casks
+
+Some casks ship as `.pkg` installers (basictex, vagrant, virtualbox) or need to create
+system directories (docker-desktop creates `/usr/local/bin`). Homebrew runs these steps by
+spawning its own `sudo` call internally — not through Ansible — and that call has no
+terminal attached, so sudo can't prompt for a password.
+
+`bootstrap.sh` creates `/etc/sudoers.d/homebrew-casks` on first run to grant three specific commands passwordless access:
+
+```
+%admin ALL=(root) SETENV: NOPASSWD: /usr/sbin/installer
+%admin ALL=(root) SETENV: NOPASSWD: /bin/mkdir
+%admin ALL=(root) SETENV: NOPASSWD: /bin/chmod
+```
+
+- **`NOPASSWD`** — skips the interactive password prompt for these commands only.
+- **`SETENV`** — allows Homebrew to pass `-E` (preserve environment) to sudo, which it uses to forward variables like `LOGNAME` and `USERNAME` into the installer context. Without `SETENV`, sudo rejects the `-E` flag with *"sorry, you are not allowed to preserve the environment"*.
+
+The rules are scoped to the three commands Homebrew actually needs — not a blanket `NOPASSWD: ALL`. `/usr/sbin/installer` runs `.pkg` installers (basictex, vagrant, virtualbox), `/bin/mkdir` creates system directories (docker-desktop needs `/usr/local/bin`), and `/bin/chmod` fixes permissions on files installed into system paths (vagrant completion scripts).
 
 ## Common commands
 
