@@ -6,9 +6,11 @@
     state: present
   loop:
     - lens                 # Kubernetes IDE
-    - raspberry-pi-imager  # flash images for your rpi/k3s nodes
+    # - raspberry-pi-imager  # flash images for your rpi/k3s nodes
     - wireshark            # packet capture / network debugging
     - charles              # HTTP(S) proxy debugging
-    - termius              # SSH client
+    # - termius              # SSH client
     - mysqlworkbench       # MySQL GUI
-    - drawio               # architecture diagrams
+    # - drawio               # architecture diagrams
+    - dbeaverlite
+    - dbvr  

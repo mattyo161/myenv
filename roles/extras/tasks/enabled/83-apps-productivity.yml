@@ -8,10 +8,12 @@
     - firefox
     - microsoft-teams
     - microsoft-outlook
+    - microsoft-excel
+    - microsoft-word
     - onedrive
     - zoom
-    - discord
-    - grammarly-desktop
-    - vlc
-    - gimp
-    - balenaetcher
+    # - discord
+    # - grammarly-desktop
+    # - vlc
+    # - gimp
+    # - balenaetcher

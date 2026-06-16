@@ -7,7 +7,7 @@
   loop:
     - cursor             # AI code editor
     - github             # GitHub Desktop
-    - intellij-idea-ce   # JetBrains IntelliJ (Community)
-    - pycharm-ce         # JetBrains PyCharm (Community)
-    - bbedit             # text editor
+    # - intellij-idea-ce   # JetBrains IntelliJ (Community)
+    # - pycharm-ce         # JetBrains PyCharm (Community)
+    # - bbedit             # text editor
     - claude             # Claude desktop app
