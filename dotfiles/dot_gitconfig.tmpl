@@ -1,12 +1,15 @@
 [user]
 	name = {{ .name }}
 	email = {{ .email }}
+{{- if stat (joinPath .chezmoi.homeDir ".ssh" "id_ed25519") }}
 # Rewrites all GitHub HTTPS URLs to SSH so `git clone https://github.com/...`
-# uses your SSH key automatically. Requires an SSH key added to your GitHub
-# account. On a fresh machine without SSH keys this breaks `brew update` —
-# see docs/runbooks.md "brew update fails with Host key verification failed".
+# uses your SSH key automatically. Skipped when ~/.ssh/id_ed25519 does not
+# exist so that tools like Homebrew that fetch from GitHub over HTTPS are not
+# broken on a fresh machine before keys are in place.
+# See docs/runbooks.md — "brew update fails with Host key verification failed".
 [url "git@github.com:"]
   insteadOf = https://github.com/
+{{- end }}
 
 [init]
 	defaultBranch = main
