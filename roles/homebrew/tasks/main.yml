@@ -24,6 +24,27 @@
     state: present
     update_homebrew: true
 
+- name: Ensure sudoers entries for Homebrew cask installs
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/homebrew-casks
+    line: "{{ item }}"
+    state: present
+    create: true
+    owner: root
+    group: wheel
+    mode: '0440'
+    validate: '/usr/sbin/visudo -cf %s'
+  become: true
+  loop:
+    - '%admin ALL=(root) SETENV: NOPASSWD: /usr/sbin/installer'
+    # required for ansible
+    - '%admin ALL=(root) SETENV: NOPASSWD: /bin/mkdir'
+    # required for docker
+    - '%admin ALL=(root) SETENV: NOPASSWD: /bin/chmod'
+    # required for vagrant
+    - '%admin ALL=(root) SETENV: NOPASSWD: /bin/ln'
+    - '%admin ALL=(root) SETENV: NOPASSWD: /usr/bin/xattr'
+
 - name: Install common Homebrew casks
   community.general.homebrew_cask:
     name: "{{ item }}"
