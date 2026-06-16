@@ -5,3 +5,5 @@
 # Personal config kept off the work repo — applied manually, never committed.
 personal/
 local.yml
+
+memory/
