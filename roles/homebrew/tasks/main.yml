@@ -18,6 +18,31 @@
     state: present
   loop: "{{ homebrew_taps }}"
 
+# Trust every third-party tap we add, so Homebrew will load its formulae and
+# casks when HOMEBREW_REQUIRE_TAP_TRUST is set. Trusting the tap covers all of
+# its formulae/casks, so there is no separate per-cask trust step. `brew trust`
+# is idempotent, but we read the existing trust file first to keep the run
+# clean (no spurious "changed") and avoid shelling out for already-trusted taps.
+- name: Read existing Homebrew trust file
+  ansible.builtin.slurp:
+    path: "{{ ansible_env.HOME }}/.homebrew/trust.json"
+  register: brew_trust_raw
+  failed_when: false
+
+- name: Determine already-trusted taps
+  ansible.builtin.set_fact:
+    brew_trusted_taps: >-
+      {{ (brew_trust_raw.content | b64decode | from_json).trustedtaps | default([])
+         if brew_trust_raw.content is defined else [] }}
+
+- name: Trust Homebrew taps
+  ansible.builtin.command:
+    cmd: "{{ brew_bin.stat.path }} trust --tap {{ item }}"
+  loop: "{{ homebrew_taps }}"
+  when: item not in brew_trusted_taps
+  register: brew_trust_result
+  changed_when: brew_trust_result.rc == 0
+
 - name: Install Homebrew formulae
   community.general.homebrew:
     name: "{{ homebrew_formulae }}"
