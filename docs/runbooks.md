@@ -45,14 +45,19 @@ hard-code `https://` URLs (npm, various CLIs) would use HTTPS and prompt for a
 password or token. The rewrite makes SSH the default silently. Removing it trades
 that convenience for one fewer bootstrap gotcha.
 
-**Why not fix this in the playbook?**
+**This is now handled automatically**
 
-The dotfiles role (chezmoi) applies `~/.gitconfig` before SSH keys exist. Adding
-`HOMEBREW_BREW_GIT_REMOTE` to the dotfiles' `~/.zshrc` template would be the
-cleanest automated fix, but it papers over the underlying issue. The current
-approach keeps the playbook simple and puts the decision in your hands: set the
-env var if you want Homebrew to always use HTTPS, or skip it once your SSH key
-is in place.
+`dotfiles/dot_gitconfig.tmpl` wraps the `[url]` block in a chezmoi `stat` check
+on `~/.ssh/id_ed25519`. When the key is absent the block is omitted, so
+`brew update` works on a fresh machine. Once you add your SSH key, re-run chezmoi
+(or the full playbook) and the rewrite will be included automatically:
+
+```bash
+chezmoi apply   # or: ansible-playbook -i inventory.ini site.yml --tags dotfiles
+```
+
+The manual fix above is only needed if you bootstrapped before this change was
+in place.
 
 ---
 
