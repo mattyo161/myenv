@@ -76,6 +76,10 @@
     state: present
     greedy: true
   loop: "{{ homebrew_casks_common }}"
+  register: cask_result
+  retries: 3
+  delay: 15
+  until: cask_result is not failed
 
 - name: Install personal Homebrew casks
   community.general.homebrew_cask:
@@ -83,4 +87,8 @@
     state: present
     greedy: true
   loop: "{{ homebrew_casks_personal }}"
+  register: cask_result
+  retries: 3
+  delay: 15
+  until: cask_result is not failed
   tags: personal

@@ -30,3 +30,6 @@
     cmd: "{{ ansible_env.HOME }}/.local/bin/mise install"
   register: mise_install
   changed_when: "'Installing' in mise_install.stderr or 'installing' in mise_install.stdout"
+  retries: 3
+  delay: 10
+  until: mise_install.rc == 0
