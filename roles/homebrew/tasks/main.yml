@@ -25,7 +25,7 @@
 # clean (no spurious "changed") and avoid shelling out for already-trusted taps.
 - name: Read existing Homebrew trust file
   ansible.builtin.slurp:
-    path: "{{ ansible_env.HOME }}/.homebrew/trust.json"
+    path: "{{ ansible_facts['env'].HOME }}/.homebrew/trust.json"
   register: brew_trust_raw
   failed_when: false
 

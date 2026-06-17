@@ -13,7 +13,7 @@
 # Adjust the CPU/MEM/DISK below to taste.
 - name: Local k8s — check colima status
   ansible.builtin.command:
-    cmd: "{{ ansible_env.HOME }}/.local/bin/mise exec -- colima status"
+    cmd: "{{ ansible_facts['env'].HOME }}/.local/bin/mise exec -- colima status"
   register: colima_status
   changed_when: false
   failed_when: false
@@ -21,7 +21,7 @@
 - name: Local k8s — start colima with k3s
   ansible.builtin.command:
     cmd: >-
-      {{ ansible_env.HOME }}/.local/bin/mise exec -- colima start
+      {{ ansible_facts['env'].HOME }}/.local/bin/mise exec -- colima start
       --kubernetes --cpu 4 --memory 8 --disk 60
   when: colima_status.rc != 0
   register: colima_start

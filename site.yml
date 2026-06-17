@@ -15,7 +15,7 @@
   pre_tasks:
     - name: Fail early on non-macOS hosts
       ansible.builtin.assert:
-        that: ansible_system == "Darwin"
+        that: ansible_facts['system'] == "Darwin"
         fail_msg: "This playbook only supports macOS."
       tags: always
 
