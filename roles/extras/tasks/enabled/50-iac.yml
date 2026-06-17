@@ -4,6 +4,10 @@
   community.general.homebrew_tap:
     name: terraform-linters/tap
     state: present
+  register: tap_result
+  retries: 3
+  delay: 15
+  until: tap_result is not failed
 
 - name: IaC extras — formulae
   community.general.homebrew:
@@ -14,3 +18,7 @@
       - checkov                        # IaC static security analysis
       - infracost                      # cloud cost estimates from Terraform
     state: present
+  register: formula_result
+  retries: 3
+  delay: 15
+  until: formula_result is not failed

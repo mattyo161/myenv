@@ -10,3 +10,7 @@
     - zed             # editor (you have ~/.config/zed/settings.json)
     - 1password       # password manager (you have ~/.config/1Password)
     - 1password-cli   # `op` CLI — secrets in scripts/automation
+  register: cask_result
+  retries: 3
+  delay: 15
+  until: cask_result is not failed
