@@ -10,12 +10,12 @@
   ansible.builtin.stat:
     path: /Library/Apple/usr/share/rosetta/rosetta
   register: rosetta_stat
-  when: ansible_architecture == 'arm64'
+  when: ansible_facts['architecture'] == 'arm64'
 
 - name: Install Rosetta 2
   ansible.builtin.command: /usr/sbin/softwareupdate --install-rosetta --agree-to-license
   when:
-    - ansible_architecture == 'arm64'
+    - ansible_facts['architecture'] == 'arm64'
     - not rosetta_stat.stat.exists
   changed_when: true
 

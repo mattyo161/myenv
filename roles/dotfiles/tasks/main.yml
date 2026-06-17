@@ -10,14 +10,14 @@
 
 - name: Ensure chezmoi config directory exists
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.config/chezmoi"
+    path: "{{ ansible_facts['env'].HOME }}/.config/chezmoi"
     state: directory
     mode: "0755"
 
 - name: Write chezmoi config (source dir + template data)
   ansible.builtin.template:
     src: chezmoi.toml.j2
-    dest: "{{ ansible_env.HOME }}/.config/chezmoi/chezmoi.toml"
+    dest: "{{ ansible_facts['env'].HOME }}/.config/chezmoi/chezmoi.toml"
     mode: "0644"
 
 - name: Apply dotfiles with chezmoi
