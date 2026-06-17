@@ -15,16 +15,20 @@ cd "$REPO_DIR"
 
 log() { printf '\n\033[1;34m==>\033[0m %s\n' "$1"; }
 
-# 0. Prime sudo — ask for the password once upfront, then keep the timestamp
-# alive in the background so it never expires mid-run (Homebrew, Ansible become,
-# and the sudoers setup all need it at different points).
-# -n (non-interactive) in the loop avoids printing a "Password:" prompt to the
-# terminal while other programs are waiting for input.
-log "Caching sudo credentials for the duration of the bootstrap run..."
-sudo -v
+# 0. Prompt for the macOS password once — used for both sudo and Ansible become.
+# Ansible's --ask-become-pass does not share the terminal's sudo credential
+# cache, so without this the user would be prompted twice. The password is
+# written to a temp file passed via --become-password-file and deleted on exit.
+log "Enter your macOS password (used once for sudo and Ansible become):"
+read -rs BOOTSTRAP_PASSWORD
+echo
+BECOME_PASS_FILE="$(mktemp)"
+printf '%s' "$BOOTSTRAP_PASSWORD" | sudo -S -v 2>/dev/null
+printf '%s' "$BOOTSTRAP_PASSWORD" > "$BECOME_PASS_FILE"
+unset BOOTSTRAP_PASSWORD
 while true; do sleep 50; sudo -n -v 2>/dev/null || true; done &
 SUDO_KEEPALIVE_PID=$!
-trap 'kill "$SUDO_KEEPALIVE_PID" 2>/dev/null' EXIT
+trap 'rm -f "$BECOME_PASS_FILE"; kill "$SUDO_KEEPALIVE_PID" 2>/dev/null' EXIT
 
 # 1. Identity -----------------------------------------------------------------
 # The playbook reads git_user_name / git_user_email / github_user from
@@ -100,6 +104,6 @@ ansible-galaxy collection install -r requirements.yml
 # homebrew role to write /etc/sudoers.d/homebrew-casks on the first run.
 # You'll be asked for your macOS password once; just press Enter if not needed.
 log "Running the playbook..."
-ansible-playbook -i inventory.ini site.yml --ask-become-pass "$@"
+ansible-playbook -i inventory.ini site.yml --become-password-file "$BECOME_PASS_FILE" "$@"
 
 log "Done. See README.md for manual post-install steps (auth, SSH keys, etc.)."
