@@ -8,11 +8,17 @@ configuration in one command. Orchestrated by **Ansible**, with:
 - **VS Code** — editor extensions
 - **chezmoi** — dotfiles, templated per user
 
-## Before you run (required first step)
+## Before you run
 
-The repo ships with **placeholder identity values**. You must replace them with your own in
-`group_vars/personal.yml` before running — the playbook **refuses to start** while the
-placeholders are still in place (a pre-flight assert aborts before anything is installed)
+On first run, `bootstrap.sh` **prompts you for your identity** (full name, email, GitHub
+username) and writes it to `group_vars/local.yml` (which is git-ignored). You no longer
+need to hand-edit a YAML file. To set it up ahead of time — or to change it later — copy
+the example and edit it; an existing `group_vars/local.yml` is left untouched:
+
+```bash
+cp group_vars/local.yml.example group_vars/local.yml
+$EDITOR group_vars/local.yml
+```
 
 Optionally review the rest of `group_vars/all.yml` (package/cask/mise lists) and trim
 anything you don't want.
@@ -22,18 +28,12 @@ anything you don't want.
 ```bash
 git clone <this-repo-url> myenv
 cd myenv
-
-# 1. REQUIRED: set your identity (see "Before you run" above)
-cp group_vars/local.yml.example group_vars/local.yml
-$EDITOR group_vars/local.yml
-
-# 2. Run it
-./bootstrap.sh
+./bootstrap.sh   # prompts for your identity on first run
 ```
 
-`bootstrap.sh` installs the Xcode Command Line Tools, Homebrew, and Ansible, then runs the
-playbook. It is **idempotent** — safe to run repeatedly. If you forget step 1, it stops
-immediately with a message telling you to edit `group_vars/all.yml`.
+`bootstrap.sh` collects your identity (if `group_vars/local.yml` is absent), then installs
+the Xcode Command Line Tools, Homebrew, mise, and Ansible before running the playbook. It is
+**idempotent** — safe to run repeatedly.
 
 ## Useful installs if not part of bootstrap
 
