@@ -7,6 +7,10 @@
   community.general.homebrew:
     name: chezmoi
     state: present
+  register: formula_result
+  retries: 3
+  delay: 15
+  until: formula_result is not failed
 
 - name: Ensure chezmoi config directory exists
   ansible.builtin.file:

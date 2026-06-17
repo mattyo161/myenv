@@ -7,3 +7,7 @@
       - dive         # explore and shrink docker image layers
       - lazydocker   # terminal UI for docker and compose
     state: present
+  register: formula_result
+  retries: 3
+  delay: 15
+  until: formula_result is not failed

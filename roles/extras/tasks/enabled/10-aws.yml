@@ -6,8 +6,16 @@
       - eksctl      # create and manage EKS clusters
       - aws-vault   # store AWS credentials securely in the macOS Keychain
     state: present
+  register: formula_result
+  retries: 3
+  delay: 15
+  until: formula_result is not failed
 
 - name: AWS extras — session-manager-plugin (cask)
   community.general.homebrew_cask:
     name: session-manager-plugin   # `aws ssm start-session` support
     state: present
+  register: cask_result
+  retries: 3
+  delay: 15
+  until: cask_result is not failed

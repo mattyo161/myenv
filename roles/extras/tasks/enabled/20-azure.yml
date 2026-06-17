@@ -5,8 +5,16 @@
   community.general.homebrew_tap:
     name: Azure/kubelogin
     state: present
+  register: tap_result
+  retries: 3
+  delay: 15
+  until: tap_result is not failed
 
 - name: Azure extras — kubelogin (AKS Entra ID auth for kubectl)
   community.general.homebrew:
     name: Azure/kubelogin/kubelogin
     state: present
+  register: formula_result
+  retries: 3
+  delay: 15
+  until: formula_result is not failed

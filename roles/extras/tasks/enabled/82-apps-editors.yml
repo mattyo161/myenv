@@ -11,3 +11,7 @@
     # - pycharm-ce         # JetBrains PyCharm (Community)
     # - bbedit             # text editor
     - claude             # Claude desktop app
+  register: cask_result
+  retries: 3
+  delay: 15
+  until: cask_result is not failed

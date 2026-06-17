@@ -17,6 +17,10 @@
     name: "{{ item }}"
     state: present
   loop: "{{ homebrew_taps }}"
+  register: tap_result
+  retries: 3
+  delay: 15
+  until: tap_result is not failed
 
 # Trust every third-party tap we add, so Homebrew will load its formulae and
 # casks when HOMEBREW_REQUIRE_TAP_TRUST is set. Trusting the tap covers all of
@@ -48,6 +52,10 @@
     name: "{{ homebrew_formulae }}"
     state: present
     update_homebrew: true
+  register: formula_result
+  retries: 3
+  delay: 15
+  until: formula_result is not failed
 
 - name: Ensure sudoers entries for Homebrew cask installs
   ansible.builtin.lineinfile:

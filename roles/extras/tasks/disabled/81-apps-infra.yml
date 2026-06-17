@@ -13,4 +13,8 @@
     - mysqlworkbench       # MySQL GUI
     # - drawio               # architecture diagrams
     - dbeaverlite
-    - dbvr  
+    - dbvr
+  register: cask_result
+  retries: 3
+  delay: 15
+  until: cask_result is not failed
