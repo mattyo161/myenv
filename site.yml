@@ -29,10 +29,10 @@
           - git_user_email != "you@example.com"
           - github_user != "your-gh-user"
         fail_msg: >-
-          Edit group_vars/all.yml first: set git_user_name, git_user_email, and
-          github_user to your own values. They are still the placeholder
-          defaults, so aborting before anything is installed or your git identity
-          is set incorrectly.
+          Identity not set: git_user_name, git_user_email, and github_user are
+          missing or still the placeholder defaults. Re-run ./bootstrap.sh (it
+          prompts for these) or edit group_vars/local.yml directly. Aborting
+          before anything is installed or your git identity is set incorrectly.
         success_msg: "Identity looks set ({{ git_user_name }} <{{ git_user_email }}>)."
       tags: always
 
