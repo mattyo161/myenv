@@ -54,10 +54,14 @@ export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
 
 # 4. Ansible (via mise/pipx — avoids brew pulling in a full Python@3.14 stack) -
 # Version is read from group_vars/all.yml to stay in sync with the playbook.
+# Install python then pipx first; mise uses pipx as the ansible backend and
+# pipx requires Python 3.10+ which may not be present on a fresh macOS machine.
 ANSIBLE_VERSION="$(awk '/^  ansible:/ {print $2}' group_vars/all.yml)"
 if ! command -v ansible-playbook >/dev/null 2>&1; then
   log "Installing Ansible ${ANSIBLE_VERSION} via mise..."
-  MISE_YES=1 mise install "ansible@${ANSIBLE_VERSION}"
+  MISE_YES=1 mise use --global python@latest
+  MISE_YES=1 mise use --global pipx@latest
+  MISE_YES=1 mise use --global "ansible@${ANSIBLE_VERSION}"
 fi
 
 # 5. Required Ansible collections ---------------------------------------------
