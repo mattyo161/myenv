@@ -28,6 +28,7 @@ homebrew_formulae:
   - kubectx
   - libyaml
   - ntp
+  - parallel # xargs on steroids (requires perl)
   - pstree
   - qemu
   - ripgrep
@@ -39,6 +40,9 @@ homebrew_formulae:
 #  - wakeonlan
   - watch
 #  - weasyprint
+  # PowerPoint Preview Generation
+  - libreoffice
+  - poppler
 
 # ---- Homebrew casks: common (installed for everyone) ------------------------
 # NOTE: visual-studio-code added so the `code` CLI exists for the vscode role.
@@ -80,19 +84,29 @@ mise_tools:
   kubectl: latest
   lima: latest
   node: latest
+  # node: 20
+  # node: 24
   pandoc: latest
   pipx: latest
   pnpm: latest
   python: latest
+  # python: 3.13
   ruby: latest
   talosctl: latest
   terraform: latest
+  # terraform: 1.15.1
+  # terraform: 1.15.5
+  # terraform: 1.5.7
+  # terraform: 1.7.4
+  terraformer: latest
   uv: latest
   yq: latest
 
 # mise tools whose idiomatic version file (e.g. .python-version) is honored.
 mise_idiomatic_version_file_enable_tools:
   - python
+  - node
+  - terraform
 
 # ---- VS Code extensions -----------------------------------------------------
 vscode_extensions:
