@@ -2,8 +2,10 @@
 # Infra / Kubernetes / debugging apps that match your stack.
 - name: Infra apps — casks
   community.general.homebrew_cask:
-    name: "{{ item }}"
+    name: "{{ cask }}"
     state: present
+    # Adopt an app already present at the install path instead of erroring.
+    install_options: adopt
   loop:
     - lens                 # Kubernetes IDE
     # - raspberry-pi-imager  # flash images for your rpi/k3s nodes
@@ -14,6 +16,8 @@
     # - drawio               # architecture diagrams
     - dbeaverlite
     - dbvr
+  loop_control:
+    loop_var: cask
   register: cask_result
   retries: 3
   delay: 15
