@@ -24,11 +24,56 @@
     dest: "{{ ansible_facts['env'].HOME }}/.config/chezmoi/chezmoi.toml"
     mode: "0644"
 
-- name: Apply dotfiles with chezmoi
+- name: Resolve chezmoi binary path
+  ansible.builtin.set_fact:
+    chezmoi_cmd: "{{ homebrew_prefix | default('/opt/homebrew') }}/bin/chezmoi"
+
+# `status` never prompts and never writes, so it's a safe pre-flight probe.
+# Each line is two columns then the path: column 1 is the change chezmoi would
+# apply, column 2 is whether the destination was modified outside chezmoi. A
+# column-2 "M" (or A/D) is exactly what makes a plain `apply` stop to prompt —
+# and fail under Ansible, which has no controlling TTY.
+- name: Detect dotfiles changed outside chezmoi
   ansible.builtin.command:
-    cmd: "{{ homebrew_prefix | default('/opt/homebrew') }}/bin/chezmoi apply"
+    cmd: "{{ chezmoi_cmd }} status"
+  register: chezmoi_status
+  changed_when: false
+  check_mode: false
+
+- name: Collect the conflicting dotfiles
+  ansible.builtin.set_fact:
+    chezmoi_conflicts: >-
+      {{ chezmoi_status.stdout_lines
+         | select('match', '^.[MAD] ')
+         | map('regex_replace', '^.. ', '')
+         | list }}
+
+# Hand the message to the warn_facts callback (see callback_plugins/), which
+# prints it as a real [WARNING] in the highlighted warning channel rather than
+# as ordinary debug output.
+- name: Warn about dotfiles changed outside chezmoi
+  ansible.builtin.set_fact:
+    callback_warnings:
+      - >-
+        {{ chezmoi_conflicts | length }} dotfile(s) were changed outside chezmoi
+        and conflict with the repo: {{ chezmoi_conflicts | join(', ') }}.
+        {{ 'They will be overwritten because dotfiles_enforce is true.'
+           if dotfiles_enforce | bool
+           else 'They were left as-is because dotfiles_enforce is false; all other dotfiles were applied.' }}
+  when: chezmoi_conflicts | length > 0
+
+- name: Apply dotfiles with chezmoi
+  # enforce (default): --force makes all changes without prompting — repo wins.
+  # not enforce: --no-tty stops chezmoi from trying to open /dev/tty (the crash
+  # under Ansible), and --keep-going applies everything it can, leaving the
+  # conflicting files untouched so local edits survive.
+  ansible.builtin.command:
+    cmd: >-
+      {{ chezmoi_cmd }} apply
+      {{ '--force' if dotfiles_enforce | bool else '--no-tty --keep-going' }}
   register: chezmoi_apply
   changed_when: chezmoi_apply.stdout | length > 0
+  failed_when: dotfiles_enforce | bool and chezmoi_apply.rc != 0
 
 # iTerm2 keeps prefs in a binary plist, so instead of templating it we point
 # iTerm2 at the committed copy under files/iterm2/ and let it load from there.
