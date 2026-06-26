@@ -80,10 +80,14 @@
 
 - name: Install common Homebrew casks
   community.general.homebrew_cask:
-    name: "{{ item }}"
+    name: "{{ cask }}"
     state: present
     greedy: true
+    # Adopt an app already present at the install path instead of erroring.
+    install_options: adopt
   loop: "{{ homebrew_casks_common }}"
+  loop_control:
+    loop_var: cask
   register: cask_result
   retries: 3
   delay: 15
@@ -91,10 +95,14 @@
 
 - name: Install personal Homebrew casks
   community.general.homebrew_cask:
-    name: "{{ item }}"
+    name: "{{ cask }}"
     state: present
     greedy: true
+    # Adopt an app already present at the install path instead of erroring.
+    install_options: adopt
   loop: "{{ homebrew_casks_personal }}"
+  loop_control:
+    loop_var: cask
   register: cask_result
   retries: 3
   delay: 15

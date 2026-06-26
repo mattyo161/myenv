@@ -2,8 +2,10 @@
 # Productivity / communication / media apps (more personal — review per machine).
 - name: Productivity & comms apps — casks
   community.general.homebrew_cask:
-    name: "{{ item }}"
+    name: "{{ cask }}"
     state: present
+    # Adopt an app already present at the install path instead of erroring.
+    install_options: adopt
   loop:
     - firefox
     - microsoft-teams
@@ -13,6 +15,8 @@
     - onedrive
     - zoom
     - raycast # screen manager, utility, launcher, ...
+  loop_control:
+    loop_var: cask
   register: cask_result
   retries: 3
   delay: 15
