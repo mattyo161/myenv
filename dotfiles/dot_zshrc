@@ -33,3 +33,7 @@ alias tfinit="terraform init"
 alias tfplan="terraform plan"
 alias tfapply="terraform apply"
 
+# Machine-local overrides — NOT managed by chezmoi, so they're never overwritten
+# by `chezmoi apply`. Put per-machine aliases/exports/secrets in ~/.zshrc.local.
+[ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+
