@@ -110,6 +110,12 @@ ansible-playbook site.yml --tags dotfiles
 | `roles/dotfiles` | Installs chezmoi and applies the dotfiles. |
 | `dotfiles/` | chezmoi source dir (`dot_zshrc` → `~/.zshrc`, etc.). |
 
+> For every configurable option — variables, defaults, tags, and engine
+> settings — with types and defaults, see **[docs/configuration.md](docs/configuration.md)**.
+>
+> For chezmoi usage, reconciliation workflows, and how to avoid losing local
+> edits to dotfiles, see **[docs/chezmoi.md](docs/chezmoi.md)**.
+
 ### How identity stays in sync
 chezmoi reads its template data (`name`, `email`, `github_user`) from a config file that the
 `dotfiles` role renders from your Ansible vars (`group_vars/local.yml`). So your identity is

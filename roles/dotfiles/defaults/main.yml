@@ -1,0 +1,10 @@
+---
+# When true (default), chezmoi applies with --force: the repo is the source of
+# truth and local edits to managed files are overwritten silently — no prompt,
+# no warning, no error.
+#
+# When false, chezmoi is run without --force. If a managed file was changed
+# outside chezmoi, the apply can't reconcile it non-interactively; rather than
+# failing the play, the task emits a warning and continues, leaving the local
+# file as-is. Set this per-host/user when local tweaks should win.
+dotfiles_enforce: true
