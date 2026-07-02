@@ -13,6 +13,7 @@ homebrew_taps:
   - cloudgraphdev/tap
   - siderolabs/tap
   - supabase/tap
+  - snowflakedb/snowflake-cli
 
 # ---- Homebrew formulae (CLI tools) ------------------------------------------
 homebrew_formulae:
@@ -20,6 +21,7 @@ homebrew_formulae:
 #  - autopsy
   - azure-cli           # Azure CLI (`az`)
   - bash-completion
+  - cliclick    # tool to execute mouse clicks on the screen through the cli
 #  - ddrescue
   - etcd
   - ffmpeg
@@ -29,6 +31,8 @@ homebrew_formulae:
   - libyaml
   - ntp
   - parallel # xargs on steroids (requires perl)
+  - plantuml # PlantUML (UML diagram generator)
+  - prek     # Rust pre-commit manager
   - pstree
   - qemu
   - ripgrep
@@ -43,6 +47,11 @@ homebrew_formulae:
   # PowerPoint Preview Generation
   - libreoffice
   - poppler
+  # json TUI - Terminal User Interface
+  - jqp
+  - jless
+#  - fx
+  - jtbl
 
 # ---- Homebrew casks: common (installed for everyone) ------------------------
 # NOTE: visual-studio-code added so the `code` CLI exists for the vscode role.
@@ -50,6 +59,7 @@ homebrew_casks_common:
   - font-fira-code-nerd-font
   - font-meslo-lg-nerd-font
   - google-cloud-sdk    # Google Cloud SDK (`gcloud`, `gsutil`, `bq`)
+  - lens                # LENS (Kubernetes IDE)
   - ngrok
   - slack
   - slack-cli
@@ -59,6 +69,7 @@ homebrew_casks_common:
   - docker-desktop
   - vagrant
   - virtualbox
+  - snowflake-cli
 
 # ---- Homebrew casks: personal (tagged 'personal'; skip with --skip-tags) ----
 homebrew_casks_personal:
