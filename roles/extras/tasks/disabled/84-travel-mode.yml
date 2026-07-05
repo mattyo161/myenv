@@ -58,8 +58,9 @@
 
       # SSIDs to try when the internet drops, in priority order.
       TRAVEL_MODE_NETWORKS=(
-        # HomeWireless5G
-        # iPhone-MOU17
+        # HomeWireless
+        # WorkWireless
+        # MyM0bileH0tSp0t
       )
 
       # Seconds between connectivity probes (the ping also keeps hotspots alive).
