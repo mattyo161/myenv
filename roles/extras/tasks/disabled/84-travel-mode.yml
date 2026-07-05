@@ -1,0 +1,66 @@
+---
+# travel-mode: keep the laptop awake (lid closed, on battery) and auto-recover
+# internet while working off a hotspot. See scripts/travel-mode/README.md.
+#
+# Installs:
+#   * /usr/local/bin/travel-mode        -> symlink into this repo (git pull updates it)
+#   * /etc/sudoers.d/travel-mode        -> passwordless sudo for pmset disablesleep ONLY
+#   * ~/.config/travel-mode/config      -> seeded once; user edits never overwritten
+
+- name: travel-mode — ensure /usr/local/bin exists
+  ansible.builtin.file:
+    path: /usr/local/bin
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: travel-mode — symlink the CLI onto PATH
+  ansible.builtin.file:
+    src: "{{ playbook_dir }}/scripts/travel-mode/travel-mode.sh"
+    dest: /usr/local/bin/travel-mode
+    state: link
+  become: true
+
+# Scoped sudoers grant: exactly the two pmset command lines travel-mode needs,
+# no wildcards. `validate` runs visudo against the staged file so a bad edit
+# can never brick sudo. See docs/decisions/0002-travel-mode-privileges.md.
+- name: travel-mode — sudoers drop-in for pmset disablesleep
+  ansible.builtin.copy:
+    dest: /etc/sudoers.d/travel-mode
+    content: |
+      # Installed by ansible (roles/extras 84-travel-mode). travel-mode needs
+      # root only to toggle lid-close sleep; nothing else is granted.
+      {{ ansible_facts['user_id'] }} ALL=(root) NOPASSWD: /usr/bin/pmset -a disablesleep 1, /usr/bin/pmset -a disablesleep 0
+    mode: "0440"
+    owner: root
+    group: wheel
+    validate: /usr/sbin/visudo -cf %s
+  become: true
+
+- name: travel-mode — ensure config directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_facts['env'].HOME }}/.config/travel-mode"
+    state: directory
+    mode: "0755"
+
+- name: travel-mode — seed default config (never overwrites your edits)
+  ansible.builtin.copy:
+    dest: "{{ ansible_facts['env'].HOME }}/.config/travel-mode/config"
+    force: false
+    mode: "0644"
+    content: |
+      # travel-mode configuration (shell fragment, sourced by travel-mode.sh).
+      # WiFi passwords are NOT stored here — reconnect uses networks already
+      # saved in the macOS Keychain. Edit freely; ansible never overwrites this.
+
+      # WiFi interface (see: networksetup -listallhardwareports)
+      TRAVEL_MODE_WIFI_DEV=en0
+
+      # SSIDs to try when the internet drops, in priority order.
+      TRAVEL_MODE_NETWORKS=(
+        # HomeWireless5G
+        # iPhone-MOU17
+      )
+
+      # Seconds between connectivity probes (the ping also keeps hotspots alive).
+      TRAVEL_MODE_INTERVAL=30

@@ -11,3 +11,4 @@ change involves a non-obvious trade-off.
 ## Index
 
 - [0001 — How chezmoi handles dotfiles changed outside chezmoi](0001-chezmoi-conflict-handling.md)
+- [0002 — How travel-mode gets root, runs in the background, and is configured](0002-travel-mode-privileges.md)

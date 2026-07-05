@@ -85,7 +85,25 @@ extra by moving its file between `enabled/` and `disabled/` — nothing in
 | State | Files (as of writing) |
 | --- | --- |
 | Enabled | `10-aws`, `20-azure`, `30-gcp`, `40-kubernetes`, `50-iac`, `60-containers-security`, `80-apps-core`, `82-apps-editors`, `83-apps-productivity` |
-| Disabled | `70-local-k8s`, `81-apps-infra`, `90-mac-app-store` |
+| Disabled | `70-local-k8s`, `81-apps-infra`, `84-travel-mode`, `90-mac-app-store` |
+
+### travel-mode (extra `84-travel-mode`)
+
+Enabling this extra installs the [travel-mode](../scripts/travel-mode/README.md)
+CLI (`/usr/local/bin/travel-mode`), a sudoers drop-in scoped to
+`pmset -a disablesleep`, and a default config. The config is **machine-local**
+(not in group_vars) and is seeded once — ansible never overwrites your edits.
+
+Set in `~/.config/travel-mode/config` (shell fragment sourced by the script):
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `TRAVEL_MODE_WIFI_DEV` | string | `en0` | WiFi interface (`networksetup -listallhardwareports`). |
+| `TRAVEL_MODE_NETWORKS` | array[string] | empty (auto-join only) | SSIDs to try when the internet drops, in priority order. Passwords come from the Keychain, never this file. |
+| `TRAVEL_MODE_INTERVAL` | int (seconds) | `30` | Time between connectivity probes; the ping also keeps hotspots from idling out. |
+
+See [decision 0002](decisions/0002-travel-mode-privileges.md) for the privilege
+and service-mode design.
 
 ### Environment variables
 
