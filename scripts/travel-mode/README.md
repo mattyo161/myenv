@@ -76,6 +76,10 @@ That installs three things:
 Manual fallback: symlink the script onto your PATH yourself and run
 `travel-mode run` — it will prompt for sudo interactively instead.
 
+A Claude Code skill (`dotfiles/dot_claude/skills/travel-mode/`, deployed by chezmoi
+to `~/.claude/skills/`) lets Claude check status and start/stop/restart the service
+directly — e.g. "start travel mode" or "why did the laptop sleep on the drive?".
+
 ## Configuration
 
 `~/.config/travel-mode/config` is a shell fragment sourced by the script:
