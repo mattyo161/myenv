@@ -29,6 +29,7 @@ homebrew_formulae:
   - k9s
   - kubectx
   - libyaml
+  - libpq    # postgres psql utility
   - ntp
   - parallel # xargs on steroids (requires perl)
   - plantuml # PlantUML (UML diagram generator)
