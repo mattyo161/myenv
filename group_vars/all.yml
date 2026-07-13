@@ -91,7 +91,7 @@ mise_tools:
   gomplate: latest
   helm: latest
   java: latest
-  jc: latest
+  jc: 1.25.6            # There was an issue with version 1.25.7 so went back to 1.25.6
   jq: latest
   kubectl: latest
   lima: latest
